@@ -22,6 +22,11 @@ export const config = await getCredentials();
 const createBot = async (config: BotConfig, spawnViewer: string) => {
   bot = mineflayer.createBot(config);
 
+  //PLUGINS
+
+  bot.loadPlugin(require("mineflayer-collectblock").plugin);
+
+  //END
   bot.once("spawn", () => {
     console.log("Bot spawned");
     if (
