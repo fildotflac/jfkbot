@@ -47,8 +47,6 @@ export const movement = (
     if (hasReachedTarget()) {
       clearInterval(interval);
       stopMovement();
-      bot.chat(`Moved ${targetDistance} blocks ${direction}.`);
-
       if (autoAlign) {
         const currentPosition = bot.entity.position;
         console.log(

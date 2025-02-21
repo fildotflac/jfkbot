@@ -33,13 +33,19 @@ export const handleChatCommands = (
     case ".autoalign":
       handleAutoalignCommand(bot);
       break;
+    case ".help":
+      handleHelpCommand(bot);
+      break;
+    case ".quit":
+      handleQuitCommand(bot);
+      break;
     default:
       bot.chat("Unknown command");
   }
 };
 
 const isOp = (username: string): boolean => {
-  return config.ops.includes(username);
+  return config.ops.includes("everyone") || config.ops.includes(username);
 };
 
 const handleMoveCommand = (bot: Bot, args: string[]) => {
@@ -105,6 +111,26 @@ const handleFaceCommand = (bot: Bot, args: string[]) => {
 const handleAutoalignCommand = (bot: Bot) => {
   autoalign = !autoalign;
   bot.chat(`Autoalign is now ${autoalign ? "enabled" : "disabled"}`);
+};
+
+const handleHelpCommand = (bot: Bot) => {
+  bot.chat("Available commands:");
+  bot.chat(
+    ".move <direction> <blocks> - Move in a direction for a number of blocks"
+  );
+  bot.chat(".jump <times> - Jump a number of times");
+  bot.chat(
+    ".jumpmove <direction> <blocks> - Jump and then move in a direction for a number of blocks"
+  );
+  bot.chat(".face <direction> - Face a direction (north, south, east, west)");
+  bot.chat(".autoalign - Toggle auto-alignment to block grid");
+  bot.chat(".help - List available commands");
+  bot.chat(".quit - Disconnect the bot from the server");
+};
+
+const handleQuitCommand = (bot: Bot) => {
+  bot.chat("Goodbye, master.");
+  bot.quit();
 };
 
 const handleNonOpResponse = (bot: Bot) => {

@@ -43,10 +43,14 @@ const askConfigQuestions = async (): Promise<BotConfig> => {
     username = await askQuestion("Enter bot username [bot]: ", "bot");
   }
 
-  const ops = await askQuestion(
-    "Enter operator usernames (e.g., AKAOnTop, FilDotSh): ",
+  const opsInput = await askQuestion(
+    "Enter operator usernames (e.g., AKAOnTop, FilDotSh) or type 'everyone' to allow all users: ",
     ""
-  ).then((answer) => answer.split(",").map((op) => op.trim()));
+  );
+  const ops =
+    opsInput.toLowerCase() === "everyone"
+      ? ["everyone"]
+      : opsInput.split(",").map((op) => op.trim());
 
   const saveConfig = await askQuestion(
     "Would you like to save this config? (y/N)",

@@ -51,8 +51,8 @@ const createBot = async (config: BotConfig, spawnViewer: string) => {
 
 const startBot = async () => {
   const spawnViewer = await askQuestion(
-    "Would you like to start webView? (Y/n)",
-    "yes"
+    "Would you like to start webView? (y/N)",
+    "no"
   );
   await createBot(config, spawnViewer);
   rl.close();
