@@ -1,3 +1,4 @@
 configs/*
 !configs/example-config.json
 node_modules
+bun.lock
