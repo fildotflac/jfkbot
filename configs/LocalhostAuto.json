@@ -1,0 +1,10 @@
+{
+  "host": "localhost",
+  "port": 25565,
+  "version": "",
+  "username": "PicksCotton",
+  "auth": "offline",
+  "ops": [
+    "AKAOnTop"
+  ]
+}

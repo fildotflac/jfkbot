@@ -7,7 +7,7 @@ export const rl = readline.createInterface({
 
 export const askQuestion = (query: string, defaultValue: string): Promise<string> => {
   return new Promise((resolve) =>
-    rl.question(`${query} (${defaultValue}): `, (answer) =>
+    rl.question(`${query}`, (answer) =>
       resolve(answer || defaultValue)
     )
   );
