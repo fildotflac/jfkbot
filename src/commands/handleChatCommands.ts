@@ -1,14 +1,22 @@
 import type { Bot } from "mineflayer";
 import { movement, jumpAndMove, faceDirection } from "../actions/movement";
 import { config } from "../index";
+import { collectBlock } from "../actions/collectBlock";
+import { dropBlock, dropAllBlocks } from "../actions/dropBlock";
 
 let autoalign = false;
+let isBusy = false;
 
 export const handleChatCommands = (
   bot: Bot,
   username: string,
   message: string
 ) => {
+  if (isBusy && message !== ".stop") {
+    bot.chat("I'm currently busy, please wait or use .stop to interrupt.");
+    return;
+  }
+
   if (!isOp(username)) {
     handleNonOpResponse(bot);
     return;
@@ -32,6 +40,15 @@ export const handleChatCommands = (
       break;
     case ".autoalign":
       handleAutoalignCommand(bot);
+      break;
+    case ".collect":
+      handleCollectBlock(bot, args);
+      break;
+    case ".drop":
+      handleDropBlock(bot, args);
+      break;
+    case ".stop":
+      handleStopCommand(bot);
       break;
     case ".help":
       handleHelpCommand(bot);
@@ -63,6 +80,42 @@ const handleMoveCommand = (bot: Bot, args: string[]) => {
   }
 
   movement(bot, direction, blocks, autoalign);
+};
+
+const handleCollectBlock = async (bot: Bot, args: string[]) => {
+  if (args.length < 1) {
+    bot.chat("Usage: .collect <block_id> [quantity]");
+    return;
+  }
+
+  const block = args[0];
+  const quantity = parseInt(args[1], 10) || 1; // Default to 1 if quantity is not provided
+  console.log(block, quantity);
+
+  if (isNaN(quantity) || quantity < 1) {
+    bot.chat("Quantity must be a positive number");
+    return;
+  }
+
+  isBusy = true;
+  await collectBlock(bot, block, quantity);
+  isBusy = false;
+};
+
+const handleDropBlock = async (bot: Bot, args: string[]) => {
+  if (args.length < 1) {
+    bot.chat("Usage: .drop <block_id> | .drop all");
+    return;
+  }
+
+  const block = args[0];
+  isBusy = true;
+  if (block === "all") {
+    await dropAllBlocks(bot);
+  } else {
+    await dropBlock(bot, block);
+  }
+  isBusy = false;
 };
 
 const handleJumpCommand = (bot: Bot, args: string[]) => {
@@ -142,5 +195,15 @@ const handleNonOpResponse = (bot: Bot) => {
     bot.chat(`You are not my master, my master is: ${ops[0]}`);
   } else {
     bot.chat(`You are not my master, my masters are: ${ops.join(", ")}`);
+  }
+};
+
+const handleStopCommand = (bot: any) => {
+  if (isBusy) {
+    isBusy = false;
+    bot.collectBlock.cancelTask();
+    bot.chat("Current command stopped.");
+  } else {
+    bot.chat("No command is currently running.");
   }
 };

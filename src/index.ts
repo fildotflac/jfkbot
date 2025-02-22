@@ -16,18 +16,19 @@ interface BotConfig {
 }
 
 let bot: Bot;
+export let mcData: any;
 
 export const config = await getCredentials();
 
 const createBot = async (config: BotConfig, spawnViewer: string) => {
   bot = mineflayer.createBot(config);
 
-  //PLUGINS
-
+  // PLUGINS
   bot.loadPlugin(require("mineflayer-collectblock").plugin);
+  // END
 
-  //END
   bot.once("spawn", () => {
+    mcData = require("minecraft-data")(bot.version);
     console.log("Bot spawned");
     if (
       spawnViewer.toLowerCase() === "yes" ||
@@ -44,7 +45,14 @@ const createBot = async (config: BotConfig, spawnViewer: string) => {
 
     if (message.startsWith(".")) {
       console.log(`Command detected: ${message}`);
-      handleChatCommands(bot, username, message);
+      try {
+        handleChatCommands(bot, username, message);
+      } catch (error) {
+        console.error(`Error handling command: ${message}`, error);
+        bot.chat(
+          `Sorry ${username}, I couldn't process the command: ${message}`
+        );
+      }
     }
   });
 };

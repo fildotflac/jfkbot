@@ -13,6 +13,7 @@
     "minecraft-data": "^3.84.1",
     "mineflayer": "^4.26.0",
     "mineflayer-collectblock": "^1.6.0",
+    "mineflayer-web-inventory": "^1.8.5",
     "prismarine-block": "^1.21.0",
     "prismarine-physics": "^1.10.0",
     "prismarine-viewer": "^1.33.0",
