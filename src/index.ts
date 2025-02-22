@@ -40,7 +40,7 @@ const createBot = async (config: BotConfig, spawnViewer: string) => {
   });
 
   bot.on("chat", (username, message) => {
-    console.log(`Message from ${username}: ${message}`);
+    //console.log(`Message from ${username}: ${message}`);
     if (username === bot.username) return;
 
     if (message.startsWith(".")) {

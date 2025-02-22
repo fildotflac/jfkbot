@@ -1,4 +1,5 @@
 import type { Bot } from "mineflayer";
+import { goals } from "mineflayer-pathfinder";
 
 export const movement = (
   bot: Bot,
@@ -101,4 +102,35 @@ export const faceDirection = (bot: Bot, direction: string) => {
   }
   bot.look(yaw, 0, true);
   bot.chat(`Facing ${direction}.`);
+};
+
+export const comeToPlayer = async (bot: Bot, username: string) => {
+  const player = bot.players[username];
+  if (!player || !player.entity) {
+    bot.chat("I can't see you, master.");
+    return;
+  }
+
+  const pathfinder = bot.pathfinder;
+  const goal = new goals.GoalFollow(player.entity, 1);
+  await pathfinder.goto(goal);
+  bot.chat("I have arrived, master.");
+};
+
+export const moveToCoordinates = async (bot: Bot, x: number, y: number, z: number) => {
+  const pathfinder = bot.pathfinder;
+  const goal = new goals.GoalBlock(x, y, z);
+
+  try {
+    await pathfinder.goto(goal);
+    bot.chat(`Arrived at coordinates (${x}, ${y}, ${z})`);
+  } catch (err: any) {
+    if (err.message.includes("Timeout")) {
+      bot.chat("Pathfinding timed out. Retrying...");
+      await moveToCoordinates(bot, x, y, z);
+    } else {
+      bot.chat(err.message);
+      console.log(err);
+    }
+  }
 };

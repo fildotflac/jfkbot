@@ -1,4 +1,3 @@
-import type { Bot } from "mineflayer";
 import { mcData } from "../index";
 
 export async function collectBlock(bot: any, block: string, quantity: number) {
@@ -11,7 +10,7 @@ export async function collectBlock(bot: any, block: string, quantity: number) {
 
   const blocks = bot.findBlocks({
     matching: blockId,
-    maxDistance: 128,
+    maxDistance: 512,
     count: quantity,
   });
 
@@ -19,8 +18,6 @@ export async function collectBlock(bot: any, block: string, quantity: number) {
     bot.chat(`No instance of block: ${block} found`);
     return;
   }
-
-  console.log(`Found blocks: ${blocks}`);
 
   try {
     const targets = blocks.map((pos: any) => bot.blockAt(pos)).filter((block: any) => block !== null);
@@ -30,7 +27,7 @@ export async function collectBlock(bot: any, block: string, quantity: number) {
     }
 
     await bot.collectBlock.collect(targets);
-    bot.chat("Done");
+    bot.chat(`Stopped collecting ${block}`);
   } catch (err: any) {
     bot.chat(err.message);
     console.log(err);

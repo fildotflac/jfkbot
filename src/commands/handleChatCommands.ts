@@ -1,5 +1,5 @@
 import type { Bot } from "mineflayer";
-import { movement, jumpAndMove, faceDirection } from "../actions/movement";
+import { movement, jumpAndMove, faceDirection, comeToPlayer, moveToCoordinates } from "../actions/movement";
 import { config } from "../index";
 import { collectBlock } from "../actions/collectBlock";
 import { dropBlock, dropAllBlocks } from "../actions/dropBlock";
@@ -46,6 +46,12 @@ export const handleChatCommands = (
       break;
     case ".drop":
       handleDropBlock(bot, args);
+      break;
+    case ".come":
+      handleComeCommand(bot, username);
+      break;
+    case ".moveto":
+      handleMoveToCommand(bot, args);
       break;
     case ".stop":
       handleStopCommand(bot);
@@ -199,11 +205,29 @@ const handleNonOpResponse = (bot: Bot) => {
 };
 
 const handleStopCommand = (bot: any) => {
-  if (isBusy) {
-    isBusy = false;
     bot.collectBlock.cancelTask();
     bot.chat("Current command stopped.");
-  } else {
-    bot.chat("No command is currently running.");
+};
+
+const handleComeCommand = async (bot: Bot, username: string) => {
+  await comeToPlayer(bot, username);
+};
+
+const handleMoveToCommand = async (bot: Bot, args: string[]) => {
+  if (args.length < 3) {
+    bot.chat("Usage: .moveto <x> <y> <z>");
+    return;
   }
+
+  const [xStr, yStr, zStr] = args;
+  const x = parseFloat(xStr);
+  const y = parseFloat(yStr);
+  const z = parseFloat(zStr);
+
+  if (isNaN(x) || isNaN(y) || isNaN(z)) {
+    bot.chat("Coordinates must be numbers");
+    return;
+  }
+
+  await moveToCoordinates(bot, x, y, z);
 };
