@@ -6,7 +6,7 @@ import { askQuestion, rl } from "./utils/askQuestion";
 import { handleChatCommands } from "./commands/handleChatCommands";
 
 interface BotConfig {
-  host: string;
+  host: any;
   port: number;
   version?: string;
   username: string;
